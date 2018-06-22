@@ -3,10 +3,18 @@ var canvas = document.getElementById("gameArea");
 var ctx = canvas.getContext("2d");
 
 // Vars for game information
-var score = 0;
+var score = 0, lives = 2;
 var paddleHits = 10;
 var gameOver = false;
 var gameWon = false;
+var capsule = {
+    x : 0,
+    width : 25,
+    y : 0,
+    height : 12,
+    deployed : false,
+    type : "null"
+};
 
 // Variables for ball information
 var x = canvas.width/2;
@@ -22,7 +30,7 @@ var paddleX = (canvas.width - paddleWidth) / 2;
 var paddleSpeed = 5;
 
 // Variables for our brick information
-var brickRowCount = 3;
+var brickRowCount = 6; //3
 var brickColumnCount = 13;
 var brickWidth = 30; // 75
 var brickHeight = 15;
@@ -73,14 +81,20 @@ function drawBricks() {
     }
 }
 
-function updateScore(){
-    var scoreLabel = document.getElementById("score");
-    scoreLabel.innerText = "Score: " + score;
+function drawCapsule(){
+    ctx.beginPath();
+    ctx.rect(capsule.x, capsule.y, capsule.width, capsule.height);
+    ctx.fillStyle = "grey"//"#00a3cc";
+    ctx.fill();
+    ctx.font = "11px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText(capsule.type, capsule.x, capsule.y + 10);
+    ctx.closePath();
 }
 
 function drawPaddle() {
     ctx.beginPath();
-    ctx.rect(paddleX, canvas.height - paddleHight - 1, paddleWidth, paddleHight);
+    ctx.rect(paddleX, canvas.height - paddleHight, paddleWidth, paddleHight);
     ctx.fillStyle = "blue";
     ctx.fill();
     ctx.closePath();
@@ -94,13 +108,19 @@ function drawBall() {
     ctx.closePath();
 }
 
+function updateScore(){
+    var scoreLabel = document.getElementById("score");
+    scoreLabel.innerText = "Score: " + score;
+}
+
+function updateLives(){
+    var livesLabel = document.getElementById("lives");
+    livesLabel.innerText = "Lives: " + lives;
+}
+
 // Called when the paddle is hit by a ball
 function collision(){
-    if(Math.random() < .5)
-        dx = Math.random() * 3;
-    else
-        var dx = -Math.random() * 3;
-    dy = -3 - Math.random();
+    dy -= Math.random() / 10;
 
     if(paddleHits > 30 && paddleHits < 40){
         brickOffsetTop += paddleHits-30;
@@ -117,6 +137,13 @@ function checkVictory(){
     }
 
     return true;
+}
+
+function deployCapsule(typeName){
+    capsule.deployed = true;
+    capsule.x = Math.random() * canvas.width;
+    capsule.y = 0;
+    capsule.type = typeName;
 }
 
 // main game loop
@@ -140,7 +167,30 @@ function update() {
     drawBall();
     brickHit();
     updateScore();
+    updateLives();
 
+    
+
+    // Control Capsules
+    if(capsule.deployed == true){
+        drawCapsule();
+        capsule.y += 1;
+
+        // Destroy capsule if it hits the ground
+        if(capsule.y >= canvas.height)
+            capsule.deployed = false;
+    }else{
+        if(Math.random() <= .001)
+            deployCapsule("Life");
+    }
+
+    if(capsule.y + capsule.height >= canvas.height - paddleHight 
+            && capsule.x >= paddleX 
+            && capsule.x <= paddleX + paddleWidth
+            && capsule.deployed == true){
+        capsule.deployed = false;
+        lives++;
+    }
 
     // Control paddle movement
     if(rightPressed && paddleX < canvas.width-paddleWidth) 
@@ -155,15 +205,26 @@ function update() {
     if(y - ballradius < 0){
         dy = 0 - dy;
     }
-    // Ball hit Paddle
-    if(x + ballradius > paddleX && x - ballradius < paddleX + paddleWidth && y + ballradius > canvas.height - paddleHight - 1){
+    // Check if the ball hit the paddle
+    if(x + ballradius > paddleX-2 && x - ballradius < paddleX + paddleWidth+2 
+        && y + ballradius > canvas.height - paddleHight){
         dy = 0 - dy;
         collision();
         paddleHits++;
-    }else if(y > canvas.height + ballradius + 10){
-        // Check if ball hit the paddle
-        gameOver = true;
-        alert("Game Over");
+    }else if(y > canvas.height + ballradius - 10){
+        // User missed the ball
+        lives--;
+
+        if(lives <= 0){
+            gameOver = true;
+            alert("Game Over");
+        }
+        
+        
+        x = canvas.width/2;
+        y = canvas.height-30;
+        dx = Math.random() * 3;
+        dy = -3;
     }
 
     // Check if the player won
