@@ -17,11 +17,13 @@ var capsule = {
 };
 
 // Variables for ball information
-var x = canvas.width/2;
-var y = canvas.height-30;
-var dx = Math.random() * 3;
-var dy = -3;
-var ballradius = 5;
+var ball = {
+    x : canvas.width/2,
+    y : canvas.height-30,
+    dx : Math.random() * 3,
+    dy : -3,
+    radius : 5
+};
 
 // Variables for our paddle
 var paddleWidth = 75;
@@ -51,8 +53,8 @@ function brickHit() {
         for(var r=0; r<brickRowCount; r++) {
             var b = bricks[c][r];
             if(b.status == 1){
-                if(x > b.x && x < b.x+brickWidth && y + ballradius > b.y && y - ballradius < b.y+brickHeight) {
-                    dy = -dy;
+                if(ball.x > b.x && ball.x < b.x+brickWidth && ball.y + ball.radius > b.y && ball.y - ball.radius < b.y+brickHeight) {
+                    ball.dy = -ball.dy;
                     b.status = 0;
                     score += 10;
                 }
@@ -102,7 +104,7 @@ function drawPaddle() {
 
 function drawBall() {
     ctx.beginPath();
-    ctx.arc(x, y, ballradius, 0, Math.PI*2);
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
     ctx.fillStyle = "black";
     ctx.fill();
     ctx.closePath();
@@ -120,7 +122,7 @@ function updateLives(){
 
 // Called when the paddle is hit by a ball
 function collision(){
-    dy -= Math.random() / 10;
+    ball.dy -= Math.random() / 10;
 
     if(paddleHits > 30 && paddleHits < 40){
         brickOffsetTop += paddleHits-30;
@@ -160,8 +162,7 @@ function update() {
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    
+
     drawBricks();
     drawPaddle();
     drawBall();
@@ -199,19 +200,19 @@ function update() {
         paddleX -= paddleSpeed;
 
     // Control ball movement
-    if(x+ballradius > canvas.width || x - ballradius < 0){
-        dx = 0 - dx;
+    if(ball.x+ball.radius > canvas.width || ball.x - ball.radius < 0){
+        ball.dx = -ball.dx;
     }
-    if(y - ballradius < 0){
-        dy = 0 - dy;
+    if(ball.y - ball.radius < 0){
+        ball.dy = -ball.dy;
     }
     // Check if the ball hit the paddle
-    if(x + ballradius > paddleX-2 && x - ballradius < paddleX + paddleWidth+2 
-        && y + ballradius > canvas.height - paddleHight){
-        dy = 0 - dy;
+    if(ball.x + ball.radius > paddleX-2 && ball.x - ball.radius < paddleX + paddleWidth+2 
+        && ball.y + ball.radius > canvas.height - paddleHight){
+        ball.dy = -ball.dy;
         collision();
         paddleHits++;
-    }else if(y > canvas.height + ballradius - 10){
+    }else if(ball.y > canvas.height + ball.radius - 10){
         // User missed the ball
         lives--;
 
@@ -221,10 +222,10 @@ function update() {
         }
         
         
-        x = canvas.width/2;
-        y = canvas.height-30;
-        dx = Math.random() * 3;
-        dy = -3;
+        ball.x = canvas.width/2;
+        ball.y = canvas.height-30;
+        ball.dx = Math.random() * 3;
+        ball.dy = -3;
     }
 
     // Check if the player won
@@ -233,8 +234,8 @@ function update() {
         alert("Congradulations, you won!");
     }
 
-    x += dx;
-    y += dy;
+    ball.x += ball.dx;
+    ball.y += ball.dy;
 }
 
 // Variables for controlling the paddle
