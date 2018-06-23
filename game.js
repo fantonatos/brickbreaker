@@ -17,13 +17,16 @@ var capsule = {
 };
 
 // Variables for ball information
-var ball = {
-    x : canvas.width/2,
-    y : canvas.height-30,
-    dx : Math.random() * 3,
-    dy : -3,
-    radius : 5
-};
+var balls = [];
+for(var index = 0; index < 1; index++){
+    balls[index] = {
+        x : canvas.width/2,
+        y : canvas.height-30,
+        dx : (Math.random() * 100 - 50) / 100,
+        dy : -3,
+        radius : 5
+    }
+}
 
 // Variables for our paddle
 var paddleWidth = 75;
@@ -53,11 +56,14 @@ function brickHit() {
         for(var r=0; r<brickRowCount; r++) {
             var b = bricks[c][r];
             if(b.status == 1){
-                if(ball.x > b.x && ball.x < b.x+brickWidth && ball.y + ball.radius > b.y && ball.y - ball.radius < b.y+brickHeight) {
-                    ball.dy = -ball.dy;
-                    b.status = 0;
-                    score += 10;
-                }
+                balls.forEach(ball => {
+                    if(ball.x > b.x && ball.x < b.x+brickWidth && ball.y + ball.radius > b.y && ball.y - ball.radius < b.y+brickHeight) {
+                        ball.dy = -ball.dy;
+                        b.status = 0;
+                        score += 10;
+                    }
+                });
+                
             }
         }
     }
@@ -102,12 +108,15 @@ function drawPaddle() {
     ctx.closePath();
 }
 
-function drawBall() {
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-    ctx.fillStyle = "black";
-    ctx.fill();
-    ctx.closePath();
+function drawBalls() {
+    balls.forEach(ball => {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+        ctx.fillStyle = "black";
+        ctx.fill();
+        ctx.closePath();
+    });
+    
 }
 
 function updateScore(){
@@ -120,13 +129,24 @@ function updateLives(){
     livesLabel.innerText = "Lives: " + lives;
 }
 
-// Called when the paddle is hit by a ball
-function collision(){
+// Called when the paddle is hit by a balls[0]
+function collision(ball){
+    ball.dy = -ball.dy;
     ball.dy -= Math.random() / 10;
 
     if(paddleHits > 30 && paddleHits < 40){
         brickOffsetTop += paddleHits-30;
     }
+}
+
+function clearBall(ball){
+    ballsNew = [];
+    var ballIndex = balls.indexOf(ball);
+    for(var index = 0; index < balls.length; index++){
+        if(index != ballIndex)
+            ballsNew[index] = balls[index];
+    }
+    balls = ballsNew;
 }
 
 function checkVictory(){
@@ -165,7 +185,7 @@ function update() {
 
     drawBricks();
     drawPaddle();
-    drawBall();
+    drawBalls();
     brickHit();
     updateScore();
     updateLives();
@@ -200,42 +220,44 @@ function update() {
         paddleX -= paddleSpeed;
 
     // Control ball movement
-    if(ball.x+ball.radius > canvas.width || ball.x - ball.radius < 0){
-        ball.dx = -ball.dx;
-    }
-    if(ball.y - ball.radius < 0){
-        ball.dy = -ball.dy;
-    }
-    // Check if the ball hit the paddle
-    if(ball.x + ball.radius > paddleX-2 && ball.x - ball.radius < paddleX + paddleWidth+2 
-        && ball.y + ball.radius > canvas.height - paddleHight){
-        ball.dy = -ball.dy;
-        collision();
-        paddleHits++;
-    }else if(ball.y > canvas.height + ball.radius - 10){
-        // User missed the ball
-        lives--;
-
-        if(lives <= 0){
-            gameOver = true;
-            alert("Game Over");
+    balls.forEach(ball => {
+        if(ball.x+ball.radius > canvas.width || ball.x - ball.radius < 0){
+            ball.dx = -ball.dx; // bounce off sides
+        }else if(ball.y - ball.radius < 0){
+            ball.dy = -ball.dy; // bounce off top
         }
+    
+        // Check if the ball hit the paddle
+        if(ball.x + ball.radius > paddleX-2 
+                && ball.x - ball.radius < paddleX + paddleWidth+2 
+                && ball.y + ball.radius > canvas.height - paddleHight){
+            collision(ball);
+            paddleHits++;
+        }else if(ball.y > canvas.height + ball.radius - 10){
+            // User missed the ball
+            lives--;
+
+            if(lives <= 0){
+                gameOver = true;
+                alert("Game Over");
+            }
         
-        
-        ball.x = canvas.width/2;
-        ball.y = canvas.height-30;
-        ball.dx = Math.random() * 3;
-        ball.dy = -3;
-    }
+            ball.x = canvas.width/2;
+            ball.y = canvas.height-30;
+            ball.dx = Math.random() * 3;
+            ball.dy = -3;
+        }
+    
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+    });
+    
 
     // Check if the player won
     if(checkVictory() == true){
         gameWon = true;
         alert("Congradulations, you won!");
     }
-
-    ball.x += ball.dx;
-    ball.y += ball.dy;
 }
 
 // Variables for controlling the paddle
