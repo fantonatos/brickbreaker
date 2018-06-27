@@ -1,6 +1,6 @@
-// Load our canvas and the 2d context
+/* Get the canvas and the 2d context */
 var canvas = document.getElementById("gameArea");
-var ctx = canvas.getContext("2d");
+var context = canvas.getContext("2d");
 
 // Vars for game information
 var score = 0, lives = 2;
@@ -43,6 +43,7 @@ var brickPadding = 3;
 var brickOffsetTop = 20;
 var brickOffsetLeft = 26;
 
+// Create our array of bricks
 var bricks = [];
 for(var col = 0; col < brickColumnCount; col++) {
     bricks[col] = [];
@@ -56,6 +57,7 @@ function brickHit() {
         for(var r=0; r<brickRowCount; r++) {
             var b = bricks[c][r];
             if(b.status == 1){
+                // Check every ball, and see if it's hitting a brick
                 balls.forEach(ball => {
                     if(ball.x > b.x && ball.x < b.x+brickWidth && ball.y + ball.radius > b.y && ball.y - ball.radius < b.y+brickHeight) {
                         ball.dy = -ball.dy;
@@ -72,49 +74,49 @@ function brickHit() {
 // DRAWING FUNCTIONS
 
 function drawBricks() {
-    for(var c=0; c<brickColumnCount; c++) {
-        for(var r=0; r<brickRowCount; r++) {
-            if(bricks[c][r].status == 1){
-                var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-                var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-                bricks[c][r].x = brickX;
-                bricks[c][r].y = brickY;
-                ctx.beginPath();
-                ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "red";
-                ctx.fill();
-                ctx.closePath();
+    for(var col=0; col<brickColumnCount; col++) {
+        for(var row=0; row<brickRowCount; row++) {
+            if(bricks[col][row].status == 1){
+                var brickX = (col*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickY = (row*(brickHeight+brickPadding))+brickOffsetTop;
+                bricks[col][row].x = brickX;
+                bricks[col][row].y = brickY;
+                context.beginPath();
+                context.rect(brickX, brickY, brickWidth, brickHeight);
+                context.fillStyle = "red";
+                context.fill();
+                context.closePath();
             }
         }
     }
 }
 
 function drawCapsule(){
-    ctx.beginPath();
-    ctx.rect(capsule.x, capsule.y, capsule.width, capsule.height);
-    ctx.fillStyle = "grey"//"#00a3cc";
-    ctx.fill();
-    ctx.font = "11px Arial";
-    ctx.fillStyle = "white";
-    ctx.fillText(capsule.type, capsule.x, capsule.y + 10);
-    ctx.closePath();
+    context.beginPath();
+    context.rect(capsule.x, capsule.y, capsule.width, capsule.height);
+    context.fillStyle = "grey"//"#00a3cc";
+    context.fill();
+    context.font = "11px Arial";
+    context.fillStyle = "white";
+    context.fillText(capsule.type, capsule.x, capsule.y + 10);
+    context.closePath();
 }
 
 function drawPaddle() {
-    ctx.beginPath();
-    ctx.rect(paddleX, canvas.height - paddleHight, paddleWidth, paddleHight);
-    ctx.fillStyle = "blue";
-    ctx.fill();
-    ctx.closePath();
+    context.beginPath();
+    context.rect(paddleX, canvas.height - paddleHight, paddleWidth, paddleHight);
+    context.fillStyle = "blue";
+    context.fill();
+    context.closePath();
 }
 
 function drawBalls() {
     balls.forEach(ball => {
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-        ctx.fillStyle = "black";
-        ctx.fill();
-        ctx.closePath();
+        context.beginPath();
+        context.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+        context.fillStyle = "black";
+        context.fill();
+        context.closePath();
     });
     
 }
@@ -129,7 +131,7 @@ function updateLives(){
     livesLabel.innerText = "Lives: " + lives;
 }
 
-// Called when the paddle is hit by a balls[0]
+// Called when the paddle is hit by a ball
 function collision(ball){
     ball.dy = -ball.dy;
     ball.dy -= Math.random() / 10;
@@ -139,6 +141,8 @@ function collision(ball){
     }
 }
 
+/* Removes all balls from our ball array,
+   but leaves the one ball specified. */
 function clearBall(ball){
     ballsNew = [];
     var ballIndex = balls.indexOf(ball);
@@ -181,7 +185,7 @@ function update() {
         return;
     }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
     drawBricks();
     drawPaddle();
@@ -201,6 +205,8 @@ function update() {
         if(capsule.y >= canvas.height)
             capsule.deployed = false;
     }else{
+
+        // Randomized deployment of capsules
         if(Math.random() <= .001){
             deployCapsule("Life");
         }else if(Math.random() <= .0004){
@@ -212,10 +218,10 @@ function update() {
             && capsule.x >= paddleX 
             && capsule.x <= paddleX + paddleWidth
             && capsule.deployed == true){
-        // user hit capsule
+        // User catches capsule
         capsule.deployed = false;
 
-        // Apply effect depending on capsule type
+        // Apply an effect depending on the capsule type
         if(capsule.type == "Life"){
             lives++;
         }else if(capsule.type == "Flip"){
@@ -239,10 +245,12 @@ function update() {
     }
     
 
-    // Control ball movement
+    /* For each ball, manage it's movement 
+       A future 'multi' capsule would require support for multiple balls */
     balls.forEach(ball => {
+        // Make sure the ball bounces off
         if(ball.x+ball.radius > canvas.width || ball.x - ball.radius < 0){
-            ball.dx = -ball.dx; // bounce off sides
+            ball.dx = -ball.dx; // bounce off left & right
         }else if(ball.y - ball.radius < 0){
             ball.dy = -ball.dy; // bounce off top
         }
@@ -262,12 +270,15 @@ function update() {
                 alert("Game Over");
             }
         
+            // Reset positions upon death
             ball.x = canvas.width/2;
             ball.y = canvas.height-30;
             ball.dx = Math.random() * 3;
             ball.dy = -3;
+            paddleX = (canvas.width - paddleWidth) / 2;
         }
     
+        // Move the ball
         ball.x += ball.dx;
         ball.y += ball.dy;
     });
@@ -284,6 +295,7 @@ function update() {
 var rightPressed = false;
 var leftPressed = false;
 
+// Key handelers
 function keyDownHandler(e) {
     if(e.keyCode == 39) {
         rightPressed = true;
@@ -302,6 +314,7 @@ function keyUpHandler(e) {
     }
 }
 
+// Add our keyboard event listeners and start the game
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 update();
