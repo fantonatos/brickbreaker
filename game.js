@@ -201,23 +201,43 @@ function update() {
         if(capsule.y >= canvas.height)
             capsule.deployed = false;
     }else{
-        if(Math.random() <= .001)
+        if(Math.random() <= .001){
             deployCapsule("Life");
+        }else if(Math.random() <= .0004){
+            deployCapsule("Flip");
+        }
     }
 
     if(capsule.y + capsule.height >= canvas.height - paddleHight 
             && capsule.x >= paddleX 
             && capsule.x <= paddleX + paddleWidth
             && capsule.deployed == true){
+        // user hit capsule
         capsule.deployed = false;
-        lives++;
+
+        // Apply effect depending on capsule type
+        if(capsule.type == "Life"){
+            lives++;
+        }else if(capsule.type == "Flip"){
+            paddleSpeed = -paddleSpeed;
+        }
     }
 
     // Control paddle movement
-    if(rightPressed && paddleX < canvas.width-paddleWidth) 
-        paddleX += paddleSpeed;
-    else if(leftPressed && paddleX > 0)
-        paddleX -= paddleSpeed;
+    if(paddleSpeed > 0){
+        // Paddle not flipped
+        if(rightPressed && paddleX < canvas.width-paddleWidth) 
+            paddleX += paddleSpeed;
+        else if(leftPressed && paddleX > 0)
+            paddleX -= paddleSpeed;
+    }else{
+        // Paddle is flipped
+        if(rightPressed && paddleX > 0) 
+            paddleX += paddleSpeed;
+        else if(leftPressed && paddleX < canvas.width-paddleWidth)
+            paddleX -= paddleSpeed;
+    }
+    
 
     // Control ball movement
     balls.forEach(ball => {
