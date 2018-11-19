@@ -17,6 +17,11 @@
         p{
             font-family: monospace;
         }
+        button{
+            display: inline;
+            width: 250px;
+            height: 150px;
+        }
     </style>
 </head>
 <body>
@@ -28,7 +33,11 @@
         </div>
         <canvas id="gameArea" width="480" height="320"></canvas>
         <p>Use your left and right arrow keys to move the paddle.</p>
+
+        <button type="button" id="leftBtn">Left</button>
+        <button type="button" id="rightBtn">Right</button>
     </center>
+
     <script src="game.js"></script>
     
 </body>

@@ -291,6 +291,8 @@ function update() {
     }
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~ User input
+
 // Variables for controlling the paddle
 var rightPressed = false;
 var leftPressed = false;
@@ -314,7 +316,20 @@ function keyUpHandler(e) {
     }
 }
 
-// Add our keyboard event listeners and start the game
+// Event Listeners keep track of keymovements
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 update();
+
+// Button press 'listeners'
+function leftBtnPressed(){
+    leftBtnPressed = false;
+    leftBtnPressed = true;
+}
+
+function rightBtnPressed(){
+    leftBtnPressed = false;
+    rightBtnPressed = true;
+}
+
+document.getElementById("leftBtn").onkeypress(leftBtnPressed());
