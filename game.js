@@ -2,12 +2,13 @@
 var canvas = document.getElementById("gameArea");
 var context = canvas.getContext("2d");
 
-// Vars for game information
-var score = 0, lives = 2;
+// Critical Game Variables
+
+var score = 0, lives = 2;   // Counters
 var paddleHits = 10;
-var gameOver = false;
+var gameOver = false;       // Boolean vars
 var gameWon = false;
-var capsule = {
+var capsule = {             // Special Capsule Specs
     x : 0,
     width : 25,
     y : 0,
@@ -16,18 +17,6 @@ var capsule = {
     type : "null"
 };
 
-// Variables for ball information
-var balls = [];
-for(var index = 0; index < 1; index++){
-    balls[index] = {
-        x : canvas.width/2,
-        y : canvas.height-30,
-        dx : (Math.random() * 100 - 50) / 100,
-        dy : -3,
-        radius : 5
-    }
-}
-
 // Variables for our paddle
 var paddleWidth = 75;
 var paddleHight = 7;
@@ -35,13 +24,27 @@ var paddleX = (canvas.width - paddleWidth) / 2;
 var paddleSpeed = 5;
 
 // Variables for our brick information
-var brickRowCount = 6; //3
+var brickRowCount = 6;      //3
 var brickColumnCount = 13;
-var brickWidth = 30; // 75
+var brickWidth = 30;        // 75
 var brickHeight = 15;
 var brickPadding = 3;
 var brickOffsetTop = 20;
 var brickOffsetLeft = 26;
+
+// Variables for ball information
+var balls = [];
+for(var index = 0; index < 1; index++){
+    balls[index] = {
+        x : canvas.width/2,
+        y : canvas.height-30,
+        dx : (Math.random() * 100 - 50) / 100,  // Randomize angle of ascent
+        dy : -3,
+        radius : 5
+    }
+}
+
+
 
 // Create our array of bricks
 var bricks = [];
