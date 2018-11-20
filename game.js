@@ -322,14 +322,12 @@ document.addEventListener("keyup", keyUpHandler, false);
 update();
 
 // Button press 'listeners'
-function leftBtnPressed(){
-    leftBtnPressed = false;
-    leftBtnPressed = true;
-}
 
-function rightBtnPressed(){
-    leftBtnPressed = false;
-    rightBtnPressed = true;
+document.getElementById('leftBtn').onclick = function() {
+    rightPressed = false;
+    leftPressed = true;
+}; 
+document.getElementById('rightBtn').onclick = function() {
+    leftPressed = false;
+    rightPressed = true;
 }
-
-document.getElementById("leftBtn").onkeypress(leftBtnPressed());
