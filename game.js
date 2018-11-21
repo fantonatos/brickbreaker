@@ -17,20 +17,21 @@ var capsule = {             // Special Capsule Specs
     type : "null"
 };
 
+
 // Variables for our paddle
-var paddleWidth = 75;
+var paddleWidth = 90;
 var paddleHight = 7;
 var paddleX = (canvas.width - paddleWidth) / 2;
 var paddleSpeed = 5;
 
 // Variables for our brick information
-var brickRowCount = 6;      //3
-var brickColumnCount = 13;
+var brickRowCount = 3;
+var brickColumnCount = 10;
 var brickWidth = 30;        // 75
 var brickHeight = 15;
 var brickPadding = 3;
-var brickOffsetTop = 20;
-var brickOffsetLeft = 26;
+var brickOffsetTop = 40;
+var brickOffsetLeft = 140;
 
 // Variables for ball information
 var balls = [];
@@ -38,7 +39,7 @@ for(var index = 0; index < 1; index++){
     balls[index] = {
         x : canvas.width/2,
         y : canvas.height-30,
-        dx : (Math.random() * 100 - 50) / 100,  // Randomize angle of ascent
+        dx : Math.random() * 2 + .5,  // Randomize angle of ascent
         dy : -3,
         radius : 5
     }
@@ -86,7 +87,7 @@ function drawBricks() {
                 bricks[col][row].y = brickY;
                 context.beginPath();
                 context.rect(brickX, brickY, brickWidth, brickHeight);
-                context.fillStyle = "red";
+                context.fillStyle = "maroon";
                 context.fill();
                 context.closePath();
             }
@@ -175,7 +176,12 @@ function deployCapsule(typeName){
     capsule.type = typeName;
 }
 
-// main game loop
+
+function nuappsLogoSlide(){
+    
+}
+
+// MAIN GAME LOOP ------------------- MAIN GAME LOOP
 function update() {
     requestAnimationFrame(update);
 
@@ -189,6 +195,19 @@ function update() {
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);
+
+
+    // Nuapps Logo Background
+
+
+    var background = new Image();
+    background.src = "NuappsBg.png";
+
+    // Make sure the image is loaded first otherwise nothing will draw.
+    //background.onload = function(){
+        context.drawImage(background,0,0);   
+    //
+    // End Logo Background
 
     drawBricks();
     drawPaddle();
@@ -294,6 +313,7 @@ function update() {
     }
 }
 
+
 // ~~~~~~~~~~~~~~~~~~~~~ User input
 
 // Variables for controlling the paddle
@@ -301,6 +321,7 @@ var rightPressed = false;
 var leftPressed = false;
 
 // Key handelers
+
 function keyDownHandler(e) {
     if(e.keyCode == 39) {
         rightPressed = true;
