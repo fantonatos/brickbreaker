@@ -25,7 +25,7 @@ var paddleX = (canvas.width - paddleWidth) / 2;
 var paddleSpeed = 5;
 
 // Variables for our brick information
-var brickRowCount = 3;
+var brickRowCount = 2;
 var brickColumnCount = 10;
 var brickWidth = 30;        // 75
 var brickHeight = 15;
@@ -303,7 +303,9 @@ function update() {
 
     // Check if the player won
     if(checkVictory() == true){
+        alert("Congrats! You Won!");
         gameWon = true;
+        /*gameWon = true;
         context.beginPath();
         context.fillStyle = "white";
         context.rect(0,0, canvas.width, canvas.height);
@@ -311,7 +313,7 @@ function update() {
         context.fillStyle = "black";
         context.fillText("You WON", canvas.width/2, canvas.height/2);
         context.fill();
-        context.closePath();
+        context.closePath();*/
     }
 }
 
