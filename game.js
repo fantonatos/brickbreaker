@@ -292,7 +292,7 @@ function update() {
             ball.y = canvas.height-30;
             ball.dx = Math.random() * 3;
             ball.dy = -3;
-            paddleX = (canvas.width - paddleWidth) / 2;
+            //paddleX = (canvas.width - paddleWidth) / 2;
         }
     
         // Move the ball
