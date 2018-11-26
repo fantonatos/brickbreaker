@@ -158,7 +158,7 @@ function clearBall(ball){
 }
 
 function checkVictory(){
-    
+    //return true;
     for(var col = 0; col < brickColumnCount; col++){
         for(var row = 0; row < brickRowCount; row++){
             if(bricks[col][row].status == 1)
@@ -174,11 +174,6 @@ function deployCapsule(typeName){
     capsule.x = Math.random() * canvas.width;
     capsule.y = 0;
     capsule.type = typeName;
-}
-
-
-function nuappsLogoSlide(){
-    
 }
 
 // MAIN GAME LOOP ------------------- MAIN GAME LOOP
@@ -309,7 +304,14 @@ function update() {
     // Check if the player won
     if(checkVictory() == true){
         gameWon = true;
-        alert("Congradulations, you won!");
+        context.beginPath();
+        context.fillStyle = "white";
+        context.rect(0,0, canvas.width, canvas.height);
+        context.fill();
+        context.fillStyle = "black";
+        context.fillText("You WON", canvas.width/2, canvas.height/2);
+        context.fill();
+        context.closePath();
     }
 }
 
