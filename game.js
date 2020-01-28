@@ -4,6 +4,7 @@ var context = canvas.getContext("2d");
 
 // Critical Game Variables
 
+var animate = true;
 var score = 0, lives = 2;   // Counters
 var paddleHits = 10;
 var gameOver = false;       // Boolean vars
@@ -178,11 +179,13 @@ function deployCapsule(typeName){
 
 // MAIN GAME LOOP ------------------- MAIN GAME LOOP
 function update() {
-    requestAnimationFrame(update);
+    if (animate)
+		requestAnimationFrame(update);
 
     if(gameOver == true || gameWon == true){
         document.location.reload();
-        
+        animate = false;
+		return;
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -334,4 +337,5 @@ function keyUpHandler(e) {
 // Event Listeners keep track of keymovements
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
-update();
+if (animate)
+	update();
