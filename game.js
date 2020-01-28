@@ -25,7 +25,7 @@ var paddleX = (canvas.width - paddleWidth) / 2;
 var paddleSpeed = 5;
 
 // Variables for our brick information
-var brickRowCount = 2;
+var brickRowCount = 4;
 var brickColumnCount = 10;
 var brickWidth = 30;        // 75
 var brickHeight = 15;
@@ -180,29 +180,16 @@ function deployCapsule(typeName){
 function update() {
     requestAnimationFrame(update);
 
-    if(gameOver == true){
-        document.location.reload();
-        return;
-    }
-    if(gameWon == true){
+    if(gameOver == true || gameWon == true){
         document.location.reload();
         return;
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-
-
-    // Nuapps Logo Background
-
-
-    var background = new Image();
-    background.src = "NuappsBg.png";
-
-    // Make sure the image is loaded first otherwise nothing will draw.
-    //background.onload = function(){
-        context.drawImage(background,0,0);   
-    //
-    // End Logo Background
+	
+	// background fill
+	context.fillStyle = '#f9ebea';
+	context.fillRect(0, 0, canvas.width, canvas.height);
 
     drawBricks();
     drawPaddle();
@@ -318,7 +305,7 @@ function update() {
 }
 
 
-// ~~~~~~~~~~~~~~~~~~~~~ User input
+// ~~~~~~~~~~~~~~~~~~~~ User input ~~~~~~~~~~~~~~~~~~~~~~ 
 
 // Variables for controlling the paddle
 var rightPressed = false;
