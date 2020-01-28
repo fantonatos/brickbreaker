@@ -335,14 +335,3 @@ function keyUpHandler(e) {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 update();
-
-// Button press 'listeners'
-
-document.getElementById('leftBtn').onclick = function() {
-    rightPressed = false;
-    leftPressed = true;
-}; 
-document.getElementById('rightBtn').onclick = function() {
-    leftPressed = false;
-    rightPressed = true;
-}
