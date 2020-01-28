@@ -40,7 +40,7 @@ for(var index = 0; index < 1; index++){
     balls[index] = {
         x : canvas.width/2,
         y : canvas.height-30,
-        dx : Math.random() * 2 + .5,  // Randomize angle of ascent
+        dx : Math.random() * 8 - 4,  // Randomize angle of ascent
         dy : -3,
         radius : 5
     }
@@ -272,7 +272,7 @@ function update() {
             // User missed the ball
             lives--;
 
-            if(lives <= 0){
+            if(lives < 0){
                 gameOver = true;
                 alert("Game Over");
             }
@@ -280,7 +280,7 @@ function update() {
             // Reset positions upon death
             ball.x = canvas.width/2;
             ball.y = canvas.height-30;
-            ball.dx = Math.random() * 3;
+            ball.dx = Math.random() * 8 - 4;
             ball.dy = -3;
             //paddleX = (canvas.width - paddleWidth) / 2;
         }
