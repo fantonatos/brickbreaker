@@ -182,7 +182,7 @@ function update() {
 
     if(gameOver == true || gameWon == true){
         document.location.reload();
-        return;
+        
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);
