@@ -133,7 +133,10 @@ function updateScore(){
 
 function updateLives(){
     var livesLabel = document.getElementById("lives");
-    livesLabel.innerText = "Lives: " + lives;
+	if(lives > 0)
+		livesLabel.innerText = "Lives: " + lives;
+	else
+		livesLabel.innerText = "Lives: None";
 }
 
 // Called when the paddle is hit by a ball
